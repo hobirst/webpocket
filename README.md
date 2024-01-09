@@ -1,4 +1,4 @@
-# Web Pocket
+# webpocket
 
 Your online five finger discount!
 
@@ -10,12 +10,12 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 
 ```plaintext=
 -h          help
--p <port>   specify the port, which the server should run on
--s <size>   max file size, default is ~33MB
+-p <port>   specify the port, which the server should run on. Default: 6969
+-s <size>   max file size. Default: ~33MB
 -k          killswitch, server shuts down after receiving a file
 
 -c          activate cookiestealer
--cl         Output file for cookielog. -c needs to be provided
+-cl         Output file for cookielog. -c needs to be provided. Default: cookielog.txt
 ```
 
 ### Send data
