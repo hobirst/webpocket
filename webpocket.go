@@ -14,6 +14,7 @@ import (
 var (
 	helpFlag bool
 	cookies  bool
+	address  string
 	port     string
 )
 
@@ -21,6 +22,7 @@ func init() {
 
 	flag.BoolVar(&helpFlag, "h", false, "Print this message")
 	flag.BoolVar(&cookies, "c", false, "activate cookiestealer")
+	flag.StringVar(&address, "a", "0.0.0.0", "Address to listen on")
 	flag.StringVar(&port, "p", "6969", "Port\n-p 1234")
 	flag.Parse()
 
@@ -39,6 +41,7 @@ func main() {
 	parserFloat, parserUnit := webpocket.CalcBufferSize()
 
 	// info messages
+	log.Printf("[!] Listening on address: %s\n", address)
 	log.Printf("[!] Running on port %s\n", port)
 	log.Printf("[!] Max upload size: %.2F %s\n", parserFloat, parserUnit)
 	if webpocket.Killswitch {
@@ -54,5 +57,5 @@ func main() {
 		http.HandleFunc("/c", webpocket.Cookies)
 	}
 
-	http.ListenAndServe(":"+port, nil)
+	http.ListenAndServe(address+":"+port, nil)
 }

