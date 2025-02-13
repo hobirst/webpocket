@@ -20,7 +20,11 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 -cl          Output file for cookielog. -c needs to be provided. Default: cookielog.txt
 
 -b           activate request bin
--bl          Outupt file for request bin. -b needs to be provided. Default: requestlog.txt
+-bl          Output file for request bin. -b needs to be provided. Default: requestlog.txt
+
+-tls         activate tls for the server
+-cert        path to cert (.pem)
+-key         path to cert key (.pem)
 ```
 
 ### Paths
