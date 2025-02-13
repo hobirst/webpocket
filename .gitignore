@@ -2,3 +2,5 @@ cookielog.txt
 requestlog.txt
 webpocket
 webpocket.exe
+key.pem
+cert.pem
