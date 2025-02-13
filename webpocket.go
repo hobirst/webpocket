@@ -17,6 +17,7 @@ var (
 	cookies    bool
 	requestBin bool
 	tlsOn      bool
+
 	address    string
 	port       string
 	certPath   string
@@ -29,10 +30,12 @@ func init() {
 	flag.BoolVar(&cookies, "c", false, "activate cookiestealer")
 	flag.BoolVar(&requestBin, "b", false, "activate request bin")
 	flag.BoolVar(&tlsOn, "tls", false, "Activate tls")
+
 	flag.StringVar(&certPath, "cert", "./cert.pem", "Path to certificate")
 	flag.StringVar(&keyPath, "key", "./key.pem", "Path to key for certificate")
 	flag.StringVar(&address, "a", "0.0.0.0", "Address to listen on")
 	flag.StringVar(&port, "p", "6969", "Port\n-p 1234")
+
 	flag.Parse()
 
 }
@@ -50,30 +53,39 @@ func main() {
 	parserFloat, parserUnit := webpocket.CalcBufferSize()
 
 	// info messages
-	log.Printf("[i] Listening on address: %s\n", address)
-	log.Printf("[i] Running on port %s\n", port)
-	log.Printf("[i] Max upload size: %.2F %s\n", parserFloat, parserUnit)
-	if webpocket.Killswitch {
+	if !webpocket.Quite {
+		log.Printf("[i] Listening on address: %s\n", address)
+		log.Printf("[i] Running on port %s\n", port)
+		log.Printf("[i] Max upload size: %.2F %s\n", parserFloat, parserUnit)
+	}
+	if webpocket.Killswitch && !webpocket.Quite{
 		log.Println("[i] Killswitch activated")
 	}
 
 	http.HandleFunc("/f", webpocket.UploadHandler)
 
 	if cookies {
-		log.Printf("[i] Cookiestealer activated")
+		if !webpocket.Quite {
+			log.Printf("[i] Cookiestealer activated")
+		}
 		http.HandleFunc("/c", webpocket.Cookies)
 	}
 
 	if requestBin {
-		log.Printf("[i] Request bin activated")
+		if !webpocket.Quite {
+			log.Printf("[i] Request bin activated")
+		}
 		http.HandleFunc("/b", webpocket.RequestBin)
 	}
-
 
 	if tlsOn {
 		serverCert, err := tls.LoadX509KeyPair(certPath, keyPath)
 		if err != nil {
-			log.Fatalf("Error loading cert: %+v\n", err)
+			if !webpocket.Quite {
+				log.Fatalf("Error loading cert: %+v\n", err)
+			} else {
+				return
+			}
 		}
 
 		tlsConfig := &tls.Config{
@@ -81,7 +93,7 @@ func main() {
 		}
 
 		server := http.Server{
-			Addr: address + ":" + port,
+			Addr:      address + ":" + port,
 			TLSConfig: tlsConfig,
 		}
 		defer server.Close()
@@ -90,7 +102,5 @@ func main() {
 	} else {
 		http.ListenAndServe(address+":"+port, nil)
 	}
-
-
 
 }
