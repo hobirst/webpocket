@@ -14,6 +14,7 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 -p <port>    specify the port, which the server should run on. Default: 6969
 -s <size>    max file size. Default: ~33MB
 -k           killswitch, server shuts down after receiving a file
+-q           suppress output
 
 -c           activate cookiestealer
 -cl          Output file for cookielog. -c needs to be provided. Default: cookielog.txt
@@ -22,7 +23,7 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 -bl          Outupt file for request bin. -b needs to be provided. Default: requestlog.txt
 ```
 
-### URLs
+### Paths
 
 | Path | Function |
 | ---- | -------- | 
