@@ -36,11 +36,12 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 
 ### Paths
 
-| Path | Function |
-| ---- | -------- | 
-| /f   | File upload |
-| /c   | Cookie stealer |
-| /b   | Request bin |
+| Path | Function | Flag |
+| ---- | -------- | ---- |
+| /f   | File upload | `none` |
+| /fs  | File server | `-fs` |
+| /c   | Cookie stealer | `-c` |
+| /b   | Request bin | `-b` |
 
 ### Send data
 
