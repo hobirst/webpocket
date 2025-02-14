@@ -9,22 +9,25 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 ### CLI arguments
 
 ```plaintext=
--h           help
--a <address> address to listen on
--p <port>    specify the port, which the server should run on. Default: 6969
--s <size>    max file size. Default: ~33MB
--k           killswitch, server shuts down after receiving a file
--q           suppress output
+-h           Help
+-a <address> Address to listen on
+-p <port>    Specify the port, which the server should run on. Default: 6969
+-s <size>    Max file size. Default: ~33MB
+-k           Killswitch, server shuts down after receiving a file
+-q           Suppress output
 
--c           activate cookiestealer
+-c           Activate cookiestealer
 -cl          Output file for cookielog. -c needs to be provided. Default: cookielog.txt
 
--b           activate request bin
+-b           Activate request bin
 -bl          Output file for request bin. -b needs to be provided. Default: requestlog.txt
 
--tls         activate tls for the server
--cert        path to cert (.pem)
--key         path to cert key (.pem)
+-fs          Activate file server
+-fspath      Path for file server. Default: ./
+
+-tls         Activate tls for the server
+-cert        Path to cert (.pem)
+-key         Path to cert key (.pem)
 
 -auth        Activate HTTP Basic Auth for file upload. Needs -authuser and -authpass
 -authuser    Username for HTTP Basic Auth

@@ -17,11 +17,13 @@ var (
 	cookies    bool
 	requestBin bool
 	tlsOn      bool
+	fileServer bool
 
-	address    string
-	port       string
-	certPath   string
-	keyPath    string
+	address        string
+	port           string
+	certPath       string
+	keyPath        string
+	fileServerPath string
 )
 
 func init() {
@@ -30,11 +32,13 @@ func init() {
 	flag.BoolVar(&cookies, "c", false, "activate cookiestealer")
 	flag.BoolVar(&requestBin, "b", false, "activate request bin")
 	flag.BoolVar(&tlsOn, "tls", false, "Activate tls")
+	flag.BoolVar(&fileServer, "fs", false, "activate file serve")
 
 	flag.StringVar(&certPath, "cert", "./cert.pem", "Path to certificate")
 	flag.StringVar(&keyPath, "key", "./key.pem", "Path to key for certificate")
 	flag.StringVar(&address, "a", "0.0.0.0", "Address to listen on")
 	flag.StringVar(&port, "p", "6969", "Port\n-p 1234")
+	flag.StringVar(&fileServerPath, "fspath", "./", "Path for file server")
 
 	flag.Parse()
 
@@ -58,7 +62,7 @@ func main() {
 		log.Printf("[i] Running on port %s\n", port)
 		log.Printf("[i] Max upload size: %.2F %s\n", parserFloat, parserUnit)
 	}
-	if webpocket.Killswitch && !webpocket.Quite{
+	if webpocket.Killswitch && !webpocket.Quite {
 		log.Println("[i] Killswitch activated")
 	}
 
@@ -76,6 +80,10 @@ func main() {
 			log.Printf("[i] Request bin activated")
 		}
 		http.HandleFunc("/b", webpocket.RequestBin)
+	}
+
+	if fileServer {
+		http.Handle("/files/", http.StripPrefix("/files/", http.FileServer(http.Dir(fileServerPath))))
 	}
 
 	if tlsOn {
