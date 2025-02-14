@@ -25,6 +25,10 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 -tls         activate tls for the server
 -cert        path to cert (.pem)
 -key         path to cert key (.pem)
+
+-auth        Activate HTTP Basic Auth for file upload. Needs -authuser and -authpass
+-authuser    Username for HTTP Basic Auth
+-authpass    Password for HTTP Basic Auth
 ```
 
 ### Paths
