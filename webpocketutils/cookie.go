@@ -1,16 +1,15 @@
 package webpocket
 
 import (
-	"os"
-	"net/http"
-	"log"
-	"fmt"
 	"bufio"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
 	"strings"
 )
 
-
-func Cookies(w http.ResponseWriter, req *http.Request) {
+func Cookies(w http.ResponseWriter, r *http.Request) {
 
 	// open logfile, create if not exist
 	logFile, err := os.OpenFile(cookielog, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
@@ -24,12 +23,12 @@ func Cookies(w http.ResponseWriter, req *http.Request) {
 
 	// print seperator to file
 	fmt.Fprintf(logFile, "=== START ===\n\n")
-	fmt.Fprintf(logFile, "Cookie from: %s\n", req.RemoteAddr)
+	fmt.Fprintf(logFile, "Cookie from: %s\n", r.RemoteAddr)
 
-	switch req.Method {
+	switch r.Method {
 
 	case "GET":
-		getParams := req.URL.Query()
+		getParams := r.URL.Query()
 		for key, val := range getParams {
 			fmt.Fprintf(logFile, "[Key]: %s\n[Val]: %s\n\n", key, val)
 			if !Quite {
@@ -38,7 +37,7 @@ func Cookies(w http.ResponseWriter, req *http.Request) {
 		}
 
 	case "POST":
-		scanner := bufio.NewScanner(req.Body)
+		scanner := bufio.NewScanner(r.Body)
 		scanner.Scan()
 		cookies := strings.Split(scanner.Text(), "; ")
 		for _, val := range cookies {

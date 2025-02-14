@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func fileHandlor(w http.ResponseWriter, r *http.Request) {
+func fileHandler(w http.ResponseWriter, r *http.Request) {
 
 	// parse form
 	err := r.ParseMultipartForm(int64(ParserSize))
@@ -53,11 +53,18 @@ func fileHandlor(w http.ResponseWriter, r *http.Request) {
 
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
+	if authentication {
+		if !checkAuth(r) {
+			fmt.Fprintf(w, unauthorized)
+			return
+		}
+	}
+
 	switch r.Method {
 	case "GET":
 		fmt.Fprintf(w, uploadForm)
 	case "POST":
-		fileHandlor(w, r)
+		fileHandler(w, r)
 
 	default:
 		fmt.Fprintf(w, illegalMethod)
