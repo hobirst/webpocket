@@ -83,7 +83,7 @@ func main() {
 	}
 
 	if fileServer {
-		http.Handle("/files/", http.StripPrefix("/files/", http.FileServer(http.Dir(fileServerPath))))
+		http.Handle("/fs/", http.StripPrefix("/files/", http.FileServer(http.Dir(fileServerPath))))
 	}
 
 	if tlsOn {
