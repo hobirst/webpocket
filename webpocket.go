@@ -79,7 +79,7 @@ func main() {
 		if !webpocket.Quite {
 			log.Printf("[i] Request bin activated")
 		}
-		http.HandleFunc("/b", webpocket.RequestBin)
+		http.HandleFunc("/b/", webpocket.RequestBin)
 	}
 
 	if fileServer {
