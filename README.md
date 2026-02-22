@@ -18,9 +18,11 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 
 -c           Activate cookiestealer
 -cl          Output file for cookielog. -c needs to be provided. Default: cookielog.txt
+-cld         Delimiter for cookie logs
 
 -b           Activate request bin
 -bl          Output file for request bin. -b needs to be provided. Default: requestlog.txt
+-bld         delimiter for request bin logs
 
 -fs          Activate file server
 -fspath      Path for file server. Default: ./
