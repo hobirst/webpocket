@@ -43,7 +43,9 @@ func main() {
 	}
 
 	if webpocket.RunFileServer {
-		http.Handle("/fs/", http.StripPrefix("/files/", http.FileServer(http.Dir(webpocket.FileServerPath))))
+		//fs := http.FileServer(http.Dir(webpocket.FileServerPath))
+		//http.Handle("/fs/", fs)
+		http.Handle("/fs/", http.StripPrefix("/fs/", http.FileServer(http.Dir(webpocket.FileServerPath))))
 	}
 
 	if webpocket.TlsOn {
