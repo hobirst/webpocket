@@ -38,7 +38,7 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
 
 	// say we good
 	if !Quite {
-		log.Printf("[+] File %s received!\n", handler.Filename)
+		log.Printf("%s File %s received!\n", LogSuccess, handler.Filename)
 	}
 	fmt.Fprint(w, uploadSuccess)
 
@@ -53,7 +53,7 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	if authentication {
+	if Authentication {
 		if !checkAuth(r) {
 			fmt.Fprintf(w, unauthorized)
 			return

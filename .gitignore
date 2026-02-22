@@ -1,6 +1,8 @@
-cookielog.txt
-requestlog.txt
+cookielog*
+requestlog*
 webpocket
 webpocket.exe
+webpocket.bndb
 key.pem
 cert.pem
+*.bak

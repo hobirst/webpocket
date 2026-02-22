@@ -12,10 +12,10 @@ import (
 
 func RequestBin(w http.ResponseWriter, r *http.Request) {
 
-	logFile, err := os.OpenFile(requestlog, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	logFile, err := os.OpenFile(RequestLogPath, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		if !Quite {
-			log.Println("[-] Error creating request bin log file")
+			log.Println("%s Error creating request bin log file", LogErr)
 		}
 		return
 	}

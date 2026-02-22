@@ -12,85 +12,45 @@ import (
 	webpocket "github.com/hobirst/webpocket/webpocketutils"
 )
 
-var (
-	helpFlag   bool
-	cookies    bool
-	requestBin bool
-	tlsOn      bool
-	fileServer bool
-
-	address        string
-	port           string
-	certPath       string
-	keyPath        string
-	fileServerPath string
-)
-
-func init() {
-
-	flag.BoolVar(&helpFlag, "h", false, "Print this message")
-	flag.BoolVar(&cookies, "c", false, "activate cookiestealer")
-	flag.BoolVar(&requestBin, "b", false, "activate request bin")
-	flag.BoolVar(&tlsOn, "tls", false, "Activate tls")
-	flag.BoolVar(&fileServer, "fs", false, "activate file serve")
-
-	flag.StringVar(&certPath, "cert", "./cert.pem", "Path to certificate")
-	flag.StringVar(&keyPath, "key", "./key.pem", "Path to key for certificate")
-	flag.StringVar(&address, "a", "0.0.0.0", "Address to listen on")
-	flag.StringVar(&port, "p", "6969", "Port\n-p 1234")
-	flag.StringVar(&fileServerPath, "fspath", "./", "Path for file server")
-
-	flag.Parse()
-
-}
-
 func main() {
 
-	// print help if wanted
-	if helpFlag {
-		fmt.Fprintf(os.Stderr, "[-] Usage: %s \n", os.Args[0])
+	if webpocket.HelpFlag {
+		fmt.Fprintf(os.Stderr, "%s Usage: %s \n", webpocket.LogErr, os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(0)
 	}
 
-	// init foo
-	parserFloat, parserUnit := webpocket.CalcBufferSize()
-
-	// info messages
-	if !webpocket.Quite {
-		log.Printf("[i] Listening on address: %s\n", address)
-		log.Printf("[i] Running on port %s\n", port)
-		log.Printf("[i] Max upload size: %.2F %s\n", parserFloat, parserUnit)
-	}
 	if webpocket.Killswitch && !webpocket.Quite {
-		log.Println("[i] Killswitch activated")
+		log.Println("%s Killswitch activated", webpocket.LogInfo)
 	}
 
 	http.HandleFunc("/f", webpocket.UploadHandler)
 
-	if cookies {
+	if webpocket.RunCookieStealer {
 		if !webpocket.Quite {
-			log.Printf("[i] Cookiestealer activated")
+			log.Printf("%s Cookiestealer activated", webpocket.LogInfo)
 		}
-		http.HandleFunc("/c", webpocket.Cookies)
+		cr := &webpocket.CookieReceiver{}
+		cr.CreateCookieLog(webpocket.CookieLogPath)
+		http.HandleFunc("/c", cr.ReceiveCookies)
 	}
 
-	if requestBin {
+	if webpocket.RunRequestBin {
 		if !webpocket.Quite {
-			log.Printf("[i] Request bin activated")
+			log.Printf("%s Request bin activated", webpocket.LogInfo)
 		}
 		http.HandleFunc("/b/", webpocket.RequestBin)
 	}
 
-	if fileServer {
-		http.Handle("/fs/", http.StripPrefix("/files/", http.FileServer(http.Dir(fileServerPath))))
+	if webpocket.RunFileServer {
+		http.Handle("/fs/", http.StripPrefix("/files/", http.FileServer(http.Dir(webpocket.FileServerPath))))
 	}
 
-	if tlsOn {
-		serverCert, err := tls.LoadX509KeyPair(certPath, keyPath)
+	if webpocket.TlsOn {
+		serverCert, err := tls.LoadX509KeyPair(webpocket.CertPath, webpocket.KeyPath)
 		if err != nil {
 			if !webpocket.Quite {
-				log.Fatalf("Error loading cert: %+v\n", err)
+				log.Fatalf("%s Error loading cert: %+v\n", webpocket.LogErr, err)
 			} else {
 				return
 			}
@@ -101,14 +61,14 @@ func main() {
 		}
 
 		server := http.Server{
-			Addr:      address + ":" + port,
+			Addr:      webpocket.Address + ":" + webpocket.Port,
 			TLSConfig: tlsConfig,
 		}
 		defer server.Close()
 
 		server.ListenAndServeTLS("", "")
 	} else {
-		http.ListenAndServe(address+":"+port, nil)
+		http.ListenAndServe(webpocket.Address + ":" + webpocket.Port, nil)
 	}
 
 }

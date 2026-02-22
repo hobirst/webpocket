@@ -10,7 +10,7 @@ func checkAuth(r *http.Request) bool {
 		return false
 	}
 
-	if username == authuser && password == authpass {
+	if username == Authuser && password == Authpass {
 		return true
 	}
 
