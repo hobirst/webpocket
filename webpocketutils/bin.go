@@ -9,26 +9,28 @@ import (
 	"net/http/httputil"
 )
 
+type RequestBin struct {
+	LogFile *os.File
+}
 
-func RequestBin(w http.ResponseWriter, r *http.Request) {
+func (rb *RequestBin) CreateRequestBinLog(path string) {
+	rb.LogFile = CreateLogFile(path)
+}
 
-	logFile, err := os.OpenFile(RequestLogPath, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil {
-		if !Quite {
-			log.Println("%s Error creating request bin log file", LogErr)
-		}
-		return
-	}
-	defer logFile.Close()
+func (rb *RequestBin) ReceiveRequests(w http.ResponseWriter, r *http.Request) {
 
 	req, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		log.Println(err)
+		log.Printf("%s Error dumping request: %+v\n", LogErr, err)
 		return
 	}
 
 	if !Quite {
-		fmt.Printf("Request from %s:\n%s", r.RemoteAddr, string(req))
-		fmt.Fprintf(logFile, "Request from %s:\n%s", r.RemoteAddr, strings.ReplaceAll(string(req), "\r\n", "\n"))
+		fmt.Printf("%s Request from %s:\n%s\n", LogInfo, r.RemoteAddr, string(req))
+	}
+
+	fmt.Fprintf(rb.LogFile, "Request from %s:\n%s\n", r.RemoteAddr, strings.ReplaceAll(string(req), "\r\n", "\n"))
+	if r.Method == "POST" { // for better readability
+		fmt.Fprintf(rb.LogFile, "\n")
 	}
 }

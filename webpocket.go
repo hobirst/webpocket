@@ -21,7 +21,7 @@ func main() {
 	}
 
 	if webpocket.Killswitch && !webpocket.Quite {
-		log.Println("%s Killswitch activated", webpocket.LogInfo)
+		log.Printf("%s Killswitch activated\n", webpocket.LogInfo)
 	}
 
 	http.HandleFunc("/f", webpocket.UploadHandler)
@@ -32,6 +32,7 @@ func main() {
 		}
 		cr := &webpocket.CookieReceiver{}
 		cr.CreateCookieLog(webpocket.CookieLogPath)
+		fmt.Fprintf(cr.LogFile, "From%sKey%sVal\n", webpocket.CookieLogDelim, webpocket.CookieLogDelim)
 		http.HandleFunc("/c", cr.ReceiveCookies)
 	}
 
@@ -39,12 +40,14 @@ func main() {
 		if !webpocket.Quite {
 			log.Printf("%s Request bin activated", webpocket.LogInfo)
 		}
-		http.HandleFunc("/b/", webpocket.RequestBin)
+		rb := &webpocket.RequestBin{}
+		rb.CreateRequestBinLog(webpocket.RequestLogPath)
+
+		http.HandleFunc("/b/", rb.ReceiveRequests)
+		http.HandleFunc("/b", rb.ReceiveRequests)
 	}
 
 	if webpocket.RunFileServer {
-		//fs := http.FileServer(http.Dir(webpocket.FileServerPath))
-		//http.Handle("/fs/", fs)
 		http.Handle("/fs/", http.StripPrefix("/fs/", http.FileServer(http.Dir(webpocket.FileServerPath))))
 	}
 

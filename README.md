@@ -22,7 +22,6 @@ A simple webserver you can send files or cookies to. I wrote it specifically for
 
 -b           Activate request bin
 -bl          Output file for request bin. -b needs to be provided. Default: requestlog.txt
--bld         delimiter for request bin logs
 
 -fs          Activate file server
 -fspath      Path for file server. Default: ./

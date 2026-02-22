@@ -2,6 +2,7 @@ package webpocket
 
 import (
 	"encoding/base64"
+	"time"
 	"flag"
 	"fmt"
 	"log"
@@ -27,7 +28,6 @@ var (
 	Authpass       string
 	RequestLogPath string
 	CookieLogPath  string
-	RequestLogDelim string
 	CookieLogDelim string
 
 	Killswitch     bool
@@ -82,7 +82,6 @@ func init() {
 	flag.StringVar(&FileServerPath, "fspath", "./", "Path for file server")
 	flag.StringVar(&RequestLogPath, "rl", "requestlog_time.txt", "Output file for request bin. -b needs to be provided")
 	flag.StringVar(&CookieLogPath, "cl", "cookielog_time.txt", "Output file for cookielog. -c needs to be provided")
-	flag.StringVar(&RequestLogDelim, "rld", ",", "Delimiter for request logs")
 	flag.StringVar(&CookieLogDelim, "cld", ",", "Delimiter for cookie logs")
 
 	flag.BoolVar(&Killswitch, "k", false, "killswitch, server shuts down after receiving a file")
@@ -128,4 +127,26 @@ func init() {
 
 	}
 
+}
+
+func CreateLogFile(path string) *os.File {
+	
+	now := time.Now().Unix()
+
+	// "*log_time.txt" = default value from corresponding flag
+	if path == "cookielog_time.txt" {
+		path = fmt.Sprintf("cookielog_%d.txt", now)
+	} else if path == "requestlog_time.txt" {
+		path = fmt.Sprintf("requestlog_%d.txt", now)
+	}
+
+	logFile, err := os.OpenFile(path, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		if !Quite {
+			log.Printf("%s Error creating cookielog file\n", LogErr)
+		}
+		return nil
+	}
+
+	return logFile
 }
