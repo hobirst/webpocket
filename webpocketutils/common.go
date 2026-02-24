@@ -2,11 +2,11 @@ package webpocket
 
 import (
 	"encoding/base64"
-	"time"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 var (
@@ -21,6 +21,7 @@ var (
 
 	Address        string
 	Port           string
+	OutDir         string
 	CertPath       string
 	KeyPath        string
 	FileServerPath string
@@ -75,10 +76,11 @@ func init() {
 	flag.BoolVar(&TlsOn, "tls", false, "Activate tls")
 	flag.BoolVar(&RunFileServer, "fs", false, "activate file serve")
 
-	flag.StringVar(&CertPath, "cert", "./cert.pem", "Path to certificate")
-	flag.StringVar(&KeyPath, "key", "./key.pem", "Path to key for certificate")
 	flag.StringVar(&Address, "a", "0.0.0.0", "Address to listen on")
 	flag.StringVar(&Port, "p", "9080", "Port\n-p 1234")
+	flag.StringVar(&OutDir, "o", "./", "Directory to write files to")
+	flag.StringVar(&CertPath, "cert", "./cert.pem", "Path to certificate")
+	flag.StringVar(&KeyPath, "key", "./key.pem", "Path to key for certificate")
 	flag.StringVar(&FileServerPath, "fspath", "./", "Path for file server")
 	flag.StringVar(&RequestLogPath, "rl", "requestlog_time.txt", "Output file for request bin. -b needs to be provided")
 	flag.StringVar(&CookieLogPath, "cl", "cookielog_time.txt", "Output file for cookielog. -c needs to be provided")
@@ -130,7 +132,7 @@ func init() {
 }
 
 func CreateLogFile(path string) *os.File {
-	
+
 	now := time.Now().Unix()
 
 	// "*log_time.txt" = default value from corresponding flag

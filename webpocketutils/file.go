@@ -6,18 +6,21 @@ import (
 	"io"
 	"os"
 	"log"
+	"strings"
 )
 
-func fileHandler(w http.ResponseWriter, r *http.Request) {
+type FileHandler struct {
+	OutDir string
+}
 
-	// parse form
+func (fh *FileHandler) saveFileFromRequest(w http.ResponseWriter, r *http.Request) {
+
 	err := r.ParseMultipartForm(int64(ParserSize))
 	if err != nil {
 		fmt.Fprint(w, uploadFail+err.Error())
 		return
 	}
 
-	// i guess the file is in memory now
 	inFile, handler, err := r.FormFile("data")
 	if err != nil {
 		fmt.Fprint(w, uploadFail, err.Error())
@@ -25,24 +28,27 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer inFile.Close()
 
-	// create file for output
-	outFile, err := os.Create(handler.Filename)
+	var writePath string
+	if strings.HasSuffix(fh.OutDir, "/") {
+		writePath = fh.OutDir + handler.Filename
+	} else {
+		writePath = fh.OutDir + "/" + handler.Filename
+	}
+
+	outFile, err := os.Create(writePath)
 	if err != nil {
 		fmt.Fprint(w, uploadFail, err.Error())
 		return
 	}
 	defer outFile.Close()
 
-	// write to file, duh
 	io.Copy(outFile, inFile)
 
-	// say we good
 	if !Quite {
 		log.Printf("%s File %s received!\n", LogSuccess, handler.Filename)
 	}
 	fmt.Fprint(w, uploadSuccess)
 
-	//check killswitch
 	if Killswitch {
 		os.Exit(0)
 	}
@@ -52,7 +58,7 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+func (fh *FileHandler) UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if Authentication {
 		if !checkAuth(r) {
 			fmt.Fprintf(w, unauthorized)
@@ -64,7 +70,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		fmt.Fprintf(w, uploadForm)
 	case "POST":
-		fileHandler(w, r)
+		fh.saveFileFromRequest(w, r)
 
 	default:
 		fmt.Fprintf(w, illegalMethod)

